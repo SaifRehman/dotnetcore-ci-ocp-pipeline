@@ -1,82 +1,118 @@
-apiVersion: tekton.dev/v1beta1
+apiVersion: tekton.dev/v1
 kind: Pipeline
 metadata:
   name: dotnetcore-api
+  namespace: dotnetcore
 spec:
   params:
-  - default: pipelines-dotnetcore-api
-    name: APP_NAME
-    type: string
-  - default: https://github.com/SaifRehman/dotnetcore-ci-ocp-pipeline.git
-    name: GIT_REPO
-    type: string
-  - default: master
-    name: GIT_REVISION
-    type: string
-  - default: quay.io/rh-ee-srehman/dotnetcore
-    name: IMAGE_NAME
-    type: string
-  - default: .
-    name: PATH_CONTEXT
-    type: string
-  - default: 'https://github.com/SaifRehman/dotnetcore-gitops.git'
-    name: CONFIG_GIT_REPO
-    type: string
-  - default: develop
-    name: CONFIG_GIT_REVISION
-    type: string
+    - default: pipelines-dotnetcore-api
+      name: APP_NAME
+      type: string
+    - default: 'https://github.com/SaifRehman/dotnetcore-ci-ocp-pipeline.git'
+      name: GIT_REPO
+      type: string
+    - default: main
+      name: GIT_REVISION
+      type: string
+    - default: quay.io/rh-ee-srehman/dotnetcore
+      name: IMAGE_NAME
+      type: string
+    - default: .
+      name: PATH_CONTEXT
+      type: string
+    - default: 'https://github.com/SaifRehman/dotnetcore-gitops.git'
+      name: CONFIG_GIT_REPO
+      type: string
+    - default: develop
+      name: CONFIG_GIT_REVISION
+      type: string
+    - name: SONAR_PROJECT_KEY
+      type: string
+      default: "dotnetcore"
+    - name: SONAR_HOST_URL
+      type: string
+      default: "http://sonarqube-sonarqube-sonarqube.apps.cluster-fqrwp.fqrwp.sandbox1673.opentlc.com"
+
   tasks:
-  - name: fetch-repository
-    params:
-    - name: url
-      value: $(params.GIT_REPO)
-    - name: revision
-      value: $(params.GIT_REVISION)
-    - name: deleteExisting
-      value: "true"
-    taskRef:
-      kind: ClusterTask
-      name: git-clone
-    workspaces:
-    - name: output
-      workspace: workspace
-  - name: build-and-push
-    params:
-    - name: IMAGE
-      value: $(params.IMAGE_NAME)
-    - name: TLSVERIFY
-      value: "false"
-    - name: CONTEXT
-      value: $(params.PATH_CONTEXT)
-    runAfter:
-    - fetch-repository
-    taskRef:
-      kind: ClusterTask
-      name: buildah
-    workspaces:
-    - name: source
-      workspace: workspace
-  - name: git-update-deployment
-    params:
-    - name: GIT_REPOSITORY
-      value: $(params.CONFIG_GIT_REPO)
-    - name: CURRENT_IMAGE
-      value: $(params.IMAGE_NAME)
-    - name: NEW_IMAGE
-      value: $(params.IMAGE_NAME)
-    - name: NEW_DIGEST
-      value: $(tasks.build-and-push.results.IMAGE_DIGEST)
-    - name: KUSTOMIZATION_PATH
-      value: environments/dev
-    - name: GIT_REF
-      value: $(params.CONFIG_GIT_REVISION)
-    runAfter:
-      - build-and-push
-    taskRef:
-      kind: Task
-      name: git-update-deployment
-    workspaces:
-    - name: workspace
-      workspace: workspace 
+    - name: fetch-repository
+      params:
+        - name: URL
+          value: $(params.GIT_REPO)
+        - name: revision
+          value: $(params.GIT_REVISION)
+        - name: deleteExisting
+          value: 'true'
+      taskRef:
+        params:
+          - name: kind
+            value: task
+          - name: name
+            value: git-clone
+          - name: namespace
+            value: openshift-pipelines
+        resolver: cluster
+      workspaces:
+        - name: output
+          workspace: workspace
+    - name: sonarqube-scan
+      runAfter:
+        - fetch-repository
+      params:
+        - name: SONAR_PROJECT_KEY
+          value: $(params.SONAR_PROJECT_KEY)
+        - name: SONAR_HOST_URL
+          value: $(params.SONAR_HOST_URL)
+      taskRef:
+        kind: Task
+        name: sonarqube-scan
+      workspaces:
+        - name: source
+          workspace: workspace
+    - name: build-and-push
+      params:
+        - name: IMAGE
+          value: $(params.IMAGE_NAME)
+        - name: DOCKERFILE
+          value: ./Dockerfile
+        - name: TLSVERIFY
+          value: 'false'
+        - name: CONTEXT
+          value: $(params.PATH_CONTEXT)
+      runAfter:
+        - sonarqube-scan
+      taskRef:
+        params:
+          - name: kind
+            value: task
+          - name: name
+            value: buildah
+          - name: namespace
+            value: openshift-pipelines
+        resolver: cluster
+      workspaces:
+        - name: source
+          workspace: workspace
+    - name: git-update-deployment
+      params:
+        - name: GIT_REPOSITORY
+          value: $(params.CONFIG_GIT_REPO)
+        - name: CURRENT_IMAGE
+          value: $(params.IMAGE_NAME)
+        - name: NEW_IMAGE
+          value: $(params.IMAGE_NAME)
+        - name: NEW_DIGEST
+          value: $(tasks.build-and-push.results.IMAGE_DIGEST)
+        - name: KUSTOMIZATION_PATH
+          value: environments/dev
+        - name: GIT_REF
+          value: $(params.CONFIG_GIT_REVISION)
+      runAfter:
+        - build-and-push
+      taskRef:
+        kind: Task
+        name: git-update-deployment
+      workspaces:
+        - name: workspace
+          workspace: workspace
   workspaces:
-  - name: workspace
+    - name: workspace

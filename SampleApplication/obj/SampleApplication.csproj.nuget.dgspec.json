@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/saif/Desktop/dotnetcore-ci-ocp-pipeline/SampleApplication/SampleApplication/SampleApplication.csproj": {}
+    "/Users/saif/Desktop/devops/dotnetcore-ci-ocp-pipeline/SampleApplication/SampleApplication.csproj": {}
   },
   "projects": {
-    "/Users/saif/Desktop/dotnetcore-ci-ocp-pipeline/SampleApplication/SampleApplication/SampleApplication.csproj": {
+    "/Users/saif/Desktop/devops/dotnetcore-ci-ocp-pipeline/SampleApplication/SampleApplication.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/saif/Desktop/dotnetcore-ci-ocp-pipeline/SampleApplication/SampleApplication/SampleApplication.csproj",
+        "projectUniqueName": "/Users/saif/Desktop/devops/dotnetcore-ci-ocp-pipeline/SampleApplication/SampleApplication.csproj",
         "projectName": "SampleApplication",
-        "projectPath": "/Users/saif/Desktop/dotnetcore-ci-ocp-pipeline/SampleApplication/SampleApplication/SampleApplication.csproj",
+        "projectPath": "/Users/saif/Desktop/devops/dotnetcore-ci-ocp-pipeline/SampleApplication/SampleApplication.csproj",
         "packagesPath": "/Users/saif/.nuget/packages/",
-        "outputPath": "/Users/saif/Desktop/dotnetcore-ci-ocp-pipeline/SampleApplication/SampleApplication/obj/",
+        "outputPath": "/Users/saif/Desktop/devops/dotnetcore-ci-ocp-pipeline/SampleApplication/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/saif/.nuget/NuGet/NuGet.Config"

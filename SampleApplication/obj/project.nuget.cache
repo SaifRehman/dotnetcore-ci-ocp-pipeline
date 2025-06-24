@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "NnEfgH+mi56JVNRGl3KA2IjUSQz58lR2aOO5yXQp3Y51oygWbEDW00wViMfdXWf+uP1Cd2jsRtTVPCnLKJWJAQ==",
+  "dgSpecHash": "Yms5VSuM3NMViei4tBVUn4hSP5rmWQHu3w1InVBxxCldiR6Qiit0098+s0OnecUOGWbiX98mH3kxlIsXDSlOhQ==",
   "success": true,
-  "projectFilePath": "/Users/saif/Desktop/dotnetcore-ci-ocp-pipeline/SampleApplication/SampleApplication/SampleApplication.csproj",
+  "projectFilePath": "/Users/saif/Desktop/devops/dotnetcore-ci-ocp-pipeline/SampleApplication/SampleApplication.csproj",
   "expectedPackageFiles": [
     "/Users/saif/.nuget/packages/microsoft.aspnetcore.openapi/7.0.7/microsoft.aspnetcore.openapi.7.0.7.nupkg.sha512",
     "/Users/saif/.nuget/packages/microsoft.extensions.apidescription.server/6.0.5/microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",

@@ -1,0 +1,1 @@
+/Users/saif/Desktop/devops/dotnetcore-ci-ocp-pipeline/SampleApplication/.sonarqube/out/0

@@ -1,0 +1,40 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: sonarqube-scan
+  labels:
+    app.kubernetes.io/version: '0.1'
+    tekton.dev/pipelines.minVersion: "0.12.1"
+    tekton.dev/tags: "code-quality"
+spec:
+  description: |
+    This Task runs a SonarQube scan using the .NET SonarScanner.
+  params:
+    - name: SONAR_PROJECT_KEY
+      type: string
+      description: The SonarQube project key
+    - name: SONAR_HOST_URL
+      type: string
+      description: The SonarQube host URL
+  workspaces:
+    - name: source
+      description: The workspace containing the source code to scan
+  steps:
+    - name: sonar-scan
+      image: mcr.microsoft.com/dotnet/sdk:7.0.304
+      env:
+        - name: SONAR_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: sonarqube-secret
+              key: SONAR_TOKEN
+      script: |
+        cd $(workspaces.source.path)
+        cd SampleApplication
+        ls
+        dotnet tool install --global dotnet-sonarscanner
+        export PATH="$PATH:/root/.dotnet/tools"
+        # dotnet restore
+        dotnet sonarscanner begin /k:"$(params.SONAR_PROJECT_KEY)" /d:sonar.host.url="$(params.SONAR_HOST_URL)" /d:sonar.login="$SONAR_TOKEN"
+        dotnet build
+        dotnet sonarscanner end /d:sonar.login="$SONAR_TOKEN"
