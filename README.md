@@ -10,6 +10,6 @@ jj
 gggu7
 asdsswd
 asxc
-nibukk
+nibukka
 ni
 sdsbb
