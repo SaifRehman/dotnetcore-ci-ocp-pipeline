@@ -37,9 +37,10 @@ spec:
       script: |
         cd $(workspaces.source.path)
         cd SampleApplication
+        ls 
         export PATH="$PATH:/root/.dotnet/tools"
         ls /root/.dotnet/tools
-        # dotnet restore
+        dotnet build --no-restore
         dotnet sonarscanner begin /k:"$(params.SONAR_PROJECT_KEY)" /d:sonar.host.url="$(params.SONAR_HOST_URL)" /d:sonar.login="$SONAR_TOKEN"
         echo "COMPLETED SONAR SCANNER"
         dotnet sonarscanner end /d:sonar.login="$SONAR_TOKEN"
