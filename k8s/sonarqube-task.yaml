@@ -21,8 +21,14 @@ spec:
       description: The workspace containing the source code to scan
   steps:
     - name: sonar-scan
-      image: mcr.microsoft.com/dotnet/sdk:7.0.304
+      image: quay.io/rh-ee-srehman/dotnettool:v3
       env:
+        - name: DOTNET_SYSTEM_NET_HTTP_USESOCKETSHTTPHANDLER
+          value: "0"
+        - name: DOTNET_SKIP_FIRST_TIME_EXPERIENCE
+          value: "true"
+        - name: DOTNET_CLI_TELEMETRY_OPTOUT
+          value: "1"
         - name: SONAR_TOKEN
           valueFrom:
             secretKeyRef:
@@ -31,10 +37,13 @@ spec:
       script: |
         cd $(workspaces.source.path)
         cd SampleApplication
-        ls
-        dotnet tool install --global dotnet-sonarscanner
-        export PATH="$PATH:/root/.dotnet/tools"
+        export PATH=$PATH:/root/.dotnet/tools
         # dotnet restore
         dotnet sonarscanner begin /k:"$(params.SONAR_PROJECT_KEY)" /d:sonar.host.url="$(params.SONAR_HOST_URL)" /d:sonar.login="$SONAR_TOKEN"
-        dotnet build
+        echo "COMPLETED SONAR SCANNER"
+        dotnet restore --disable-parallel --ignore-failed-sources
+        echo "COMPLETED restore"
+        dotnet build 
+        echo "COMPLETED BUILD"
         dotnet sonarscanner end /d:sonar.login="$SONAR_TOKEN"
+        echo "COMPLETED LAST STEP"

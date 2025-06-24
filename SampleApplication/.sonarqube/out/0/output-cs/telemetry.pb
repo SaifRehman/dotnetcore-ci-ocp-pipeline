@@ -1,1 +1,0 @@
-vR`/Users/saif/Desktop/devops/dotnetcore-ci-ocp-pipeline/SampleApplication/SampleApplication.csproj¢net7.0òCSharp11

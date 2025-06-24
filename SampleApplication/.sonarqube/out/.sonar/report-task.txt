@@ -1,6 +1,0 @@
-projectKey=sonarqube
-serverUrl=http://sonarqube-sonarqube-sonarqube.apps.cluster-fqrwp.fqrwp.sandbox1673.opentlc.com
-serverVersion=25.5.0.107428
-dashboardUrl=http://sonarqube-sonarqube-sonarqube.apps.cluster-fqrwp.fqrwp.sandbox1673.opentlc.com/dashboard?id=sonarqube
-ceTaskId=3cae7a86-8de7-4d5c-8b56-fd0c88834e0d
-ceTaskUrl=http://sonarqube-sonarqube-sonarqube.apps.cluster-fqrwp.fqrwp.sandbox1673.opentlc.com/api/ce/task?id=3cae7a86-8de7-4d5c-8b56-fd0c88834e0d
